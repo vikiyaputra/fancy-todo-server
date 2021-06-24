@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Todo.belongsTo(models.User, {foreignKey:`UserId`})
     }
   };
   Todo.init({
@@ -23,7 +24,16 @@ module.exports = (sequelize, DataTypes) => {
           throw `Waktu gak sesuai`
         }
       }
-    }}
+    }},
+    UserId:{
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'UserId can not be null'
+        }
+      }
+    }
   }, {
     sequelize,
     modelName: 'Todo',

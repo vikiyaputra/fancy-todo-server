@@ -1,23 +1,44 @@
-const {Todo} = require(`../models/index.js`)
+const {Todo, User} = require(`../models/index.js`)
+const {comparePassword} = require(`../helpers/bcrypt`)
+const {generateToken} = require(`../helpers/jwt.js`)
+
 
 class Controller {
     static getTodos(req, res){
-        Todo.findAll({order:[[`id`,`ASC`]]})
-        .then(data =>{
-            res.status(200).json(data)
+        // console.log(res.local.user);
+        // const {id} = res.local.user
+        console.log(req.currentUser.id);
+        Todo.findAll({
+            where:{
+                UserId: req.currentUser.id
+            },
+            order:
+            [[`id`,`ASC`]]
         })
-        .catch(err=>{
-            res.status(500).json({ message: "Todos not found"
+            .then(data =>{
+                if (data.length === 0){
+                    throw {
+                        code: 404,
+                        message: "Todos not found"
+                    }
+                } else{
+                    res.status(200).json(data)
+                }
             })
-        })
+            .catch(err=>{
+                let status = err.code || 500
+                res.status(status).json(err)
+            })
     }
 
     static postTodo(req, res){
         let {title,description,status,due_date} = req.body
+        let UserId = req.currentUser.id
         Todo.create({
             title,
             description,
             status,
+            UserId,
             due_date: new Date(due_date)
         })
         .then(data =>{
@@ -44,21 +65,24 @@ class Controller {
 
     static putTodo(req, res){
         let {title,description,status,due_date} = req.body
-        Todo.update({title,description,status,due_date},{where:{id:req.params.id}, returning:true})
-        .then(data=>{
-            if(data[0] === 0){
-                res.status(404).json({message: "Todo not Found"})
-            } else {
-                res.status(200).json({Todo:data[1][0]})
-            }
+        Todo.update({title,description,status,due_date},{
+            where: {id:req.params.id}, 
+            returning: true
         })
-        .catch(err=>{
-            if(err.name === "SequelizeValidationError"){
-                res.status(400).json({message:"Validation Error"})
-            } else {
-                res.status(500).json(err)
-            }
-        });
+            .then(data=>{
+                if(data[0] === 0){
+                    res.status(404).json({message: "Todo not Found"})
+                } else {
+                    res.status(200).json({Todo:data[1][0]})
+                }
+            })
+            .catch(err=>{
+                if(err.name === "SequelizeValidationError"){
+                    res.status(400).json({message:"Validation Error"})
+                } else {
+                    res.status(500).json(err)
+                }
+            });
     }
 
     static patchTodo (req, res){
@@ -114,6 +138,37 @@ class Controller {
         .catch(err=>{
             res.status(500).json(err)
         });
+    }
+
+    static register (req, res){
+        const {name, email, password, type} = req.body
+        User.create({name, email, password, type}, {returning:true})
+            .then(data =>{
+                console.log(data);
+                res.status(200).json(data.email)
+            })
+            .catch(err =>{
+                res.status(500).json(err)
+            })
+    }
+
+    static login (req, res){
+        const {email, password} = req.body
+        User.findOne({where:{email}})
+        .then(data=>{
+            if(!data){
+                throw {message: `Email / Password Salah`}
+            }
+            if(comparePassword(password, data.password)){
+                let token = generateToken({id: data.id, name: data.name, email: data.email, type:data.type})
+                res.status(200).json({token})
+            } else {
+                throw {message: `Email / Password Salah`}
+            }
+        })
+        .catch(err =>{
+                res.status(500).json(err)
+            })
     }
 }
 
