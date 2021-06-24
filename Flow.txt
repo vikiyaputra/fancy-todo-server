@@ -1,0 +1,21 @@
+1. Bikin class User dulu minimal email dan password
+1a. bikin hooks beforeCreate untuk has password
+2. Ubah modelnya Todo dengan addColumn (beri key "name" biar drop nya gampang)
+2b. Balik ke Model, untuk tambahin Datatypes
+3. define association user dengan modelnya (todo)
+4. Mulai proses login, handle jika data email tidak di temukan, dan comparepassword tidak berhasil
+5. Jika password match, mulai generate token dan kirim ke klien (dengan payload yang seperlunya)
+    var jwt = require('jsonwebtoken');
+    var token = jwt.sign({ foo: 'bar' }, 'shhhhh');
+6. next kita pindah dari controller ke router (halaman yang kita mau protect)
+7. kita may verify tokennya dengan 
+    function verifyToken(token){
+        return jwt.verify(token, SECRET_KEY)
+    }
+8. require di routes nya dan masukin dalam middleware "authentication"
+9. sebelum trial authentication, pastikan copy token dari login ke bagian header dan bikin Get todos yang baru
+10. kalau misalkan secret key pas generate token, beda sama verify, nanti error yang dibalikin adalah html (karena blum di handle di authenticationya)
+11. HARUS PAKE TRY CATCH. (di middlewarenya) (jadi abis define "authentication" jangan langsung pangil function verify, tp try dulu)
+12. di bagian catch, masukin res.status
+13. tidak perlu keluar dari middleware authentication, langsung aja cari USER yang sesuai sama token yang nge request. (findbypk)
+

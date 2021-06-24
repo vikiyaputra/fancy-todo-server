@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "heaven",
+    "database": "p2-fancy-to-dos",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}
