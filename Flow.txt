@@ -31,6 +31,14 @@
 seperate middlewares to different folders if possible (middlewares/auth.js)
 npm install dotenv, make .env and .env-example. and paste "require('dotenv').config()" in app.js (no need to require. just add process.env.variable)
 
+Error Handling: seperti middleware tapi di akhir dan ada 4 params (err, req, res, next)
+* tinggal replace res.status(500).json(err) -> next(err  / {message, code})
+* taruh app.use(err, req, res, next)
+* INGAT kalau next nya tanpa object, dia akan ke middleware selanjutnya, jadi kalo mau ke error handle, perlu taruh object dalam next
+* INGAT error handle harus taru di bagian akhir banget, sbelom app.listen
+* pastikan semua static method ada next nya sbelom pake next
+* untuk bedain error code, pake switch case aja
+
 questions:
 * apakah setiap table perlu authorization yang berbeda2? karena proses ini kan langsung nyari 1 table
 * apakah deleteTodo perlu di bikin lebih strict to make sure Todo yang di delete beneran kepunyaan user?

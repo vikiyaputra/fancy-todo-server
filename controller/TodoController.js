@@ -1,10 +1,7 @@
 const {Todo, User} = require(`../models/index.js`)
-const {comparePassword} = require(`../helpers/bcrypt`)
-const {generateToken} = require(`../helpers/jwt.js`)
 
-
-class Controller {
-    static getTodos(req, res){
+class TodoController {
+    static getTodos(req, res, next){
         // console.log(req.currentUser.id);
         Todo.findAll({
             where:{ UserId: req.currentUser.id },
@@ -14,19 +11,20 @@ class Controller {
                 if (data.length === 0){
                     throw {
                         code: 404,
-                        message: "Todos not found"
+                        name: "Todo not found"
                     }
                 } else {
                     res.status(200).json(data)
                 }
             })
             .catch(err=>{
-                let status = err.code || 500
-                res.status(status).json(err)
+                next(err)
+                // let status = err.code || 500
+                // res.status(status).json(err)
             })
     }
 
-    static postTodo(req, res){
+    static postTodo(req, res, next){
         let {title,description,status,due_date} = req.body
         let UserId = req.currentUser.id
         Todo.create({
@@ -40,11 +38,12 @@ class Controller {
             res.status(201).json(data)
         })
         .catch(err=>{
-            if(err.name === "SequelizeValidationError"){
-                res.status(400).json({error:err.name})
-            } else {
-                res.status(500).json(err)
-            }
+            next(err)
+            // if(err.name === "SequelizeValidationError"){
+            //     res.status(400).json({error:err.name})
+            // } else {
+            //     res.status(500).json(err)
+            // }
         })
     }
 
@@ -54,7 +53,8 @@ class Controller {
             res.status(200).json(data)
         })
         .catch(err=>{
-            res.status(500).json(err)
+            next(err)
+            // res.status(500).json(err)
         });
     }
 
@@ -66,17 +66,18 @@ class Controller {
         })
             .then(data=>{
                 if(data[0] === 0){
-                    res.status(404).json({message: "Todo not Found"})
+                    throw {name: "Todo not Found"}
                 } else {
                     res.status(200).json({Todo:data[1][0]})
                 }
             })
             .catch(err=>{
-                if(err.name === "SequelizeValidationError"){
-                    res.status(400).json({message:"Validation Error"})
-                } else {
-                    res.status(500).json(err)
-                }
+                next(err)
+                // if(err.name === "SequelizeValidationError"){
+                //     res.status(400).json({message:"Validation Error"})
+                // } else {
+                //     res.status(500).json(err)
+                // }
             });
     }
 
@@ -85,17 +86,19 @@ class Controller {
         Todo.update({status}, {where:{id:req.params.id}, returning:true})
         .then(data=>{
             if(data[0] === 0){
-                res.status(404).json({message: "Todo not Found"})
+                throw {name: "Todo not Found"}
+                // res.status(404).json({message: "Todo not Found"})
             } else {
                 res.status(200).json({Todo:data[1][0]})
             }
         })
         .catch(err=>{
-            if(err.name === "SequelizeValidationError"){
-                res.status(400).json({message:"Validation Error"})
-            } else {
-                res.status(500).json(err)
-            }
+            next(err)
+            // if(err.name === "SequelizeValidationError"){
+            //     res.status(400).json({name: "Validation Error"})
+            // } else {
+            //     res.status(500).json(err)
+            // }
         });
     }
 
@@ -124,48 +127,19 @@ class Controller {
         })
         .then(data =>{
             if(data === 0){
-                res.status(404).json({message: "Todo not Found"})
+                throw {message: "Todo not Found"}
+                // res.status(404).json({message: "Todo not Found"})
             } else {
                 res.status(200).json([{message: "succesfully deleted"},deletedData])
             }
 
         })
         .catch(err=>{
-            res.status(500).json(err)
+            next(err)
+            // res.status(500).json(err)
         });
-    }
-
-    static register (req, res){
-        const {name, email, password, type} = req.body
-        User.create({name, email, password, type}, {returning:true})
-            .then(data =>{
-                console.log(data);
-                res.status(200).json(data.email)
-            })
-            .catch(err =>{
-                res.status(500).json(err)
-            })
-    }
-
-    static login (req, res){
-        const {email, password} = req.body
-        User.findOne({where:{email}})
-        .then(data=>{
-            if(!data){
-                throw {message: `Email / Password Salah`}
-            }
-            if(comparePassword(password, data.password)){
-                let token = generateToken({id: data.id, name: data.name, email: data.email, type:data.type})
-                res.status(200).json({token})
-            } else {
-                throw {message: `Email / Password Salah`}
-            }
-        })
-        .catch(err =>{
-                res.status(500).json(err)
-            })
     }
 }
 
 
-module.exports = Controller
+module.exports = TodoController
