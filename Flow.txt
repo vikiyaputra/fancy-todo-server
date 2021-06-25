@@ -1,7 +1,7 @@
 1. Bikin class User dulu minimal email dan password
 1a. bikin hooks beforeCreate untuk has password
 2. Ubah modelnya Todo dengan addColumn (beri key "name" biar drop nya gampang)
-2b. Balik ke Model, untuk tambahin Datatypes
+2b. Balik ke Model, untuk tambahin Datatypes dan references
 3. define association user dengan modelnya (todo)
 4. Mulai proses login, handle jika data email tidak di temukan, dan comparepassword tidak berhasil
 5. Jika password match, mulai generate token dan kirim ke klien (dengan payload yang seperlunya)
@@ -18,4 +18,20 @@
 11. HARUS PAKE TRY CATCH. (di middlewarenya) (jadi abis define "authentication" jangan langsung pangil function verify, tp try dulu)
 12. di bagian catch, masukin res.status
 13. tidak perlu keluar dari middleware authentication, langsung aja cari USER yang sesuai sama token yang nge request. (findbypk)
+14. tujuan dari step 13 adalah " req.currentUser = user " karena setelah step ini, user akan teridentify dan token sudah di authenticate
+14a. handle error Authentication failed
+15. introduce authorization where it will need "req.currentUser.id" as the mian component
+16. READ THIS SLOWLY - the goal is make sure the /xxx/:id really belongs to this user. makanya ada Todo.findByPk(req.params.id) dan see kalau Todonya punya UserId yang sama. lalu next()
+16a. handle error code you are not authorized
+17. Modify Model.findAll nya untuk show only kepunyaan client (where:{ UserId: req.currentUser.id })
+18. Modicy Model.post agar cantumin UserId ke setiap entry yang dibikin (let UserId = req.currentUser.id)
+19. Untuk patch, put, dan delete kemungkinann tidak perlu di rubah
+20. DONE
 
+seperate middlewares to different folders if possible (middlewares/auth.js)
+npm install dotenv, make .env and .env-example. and paste "require('dotenv').config()" in app.js (no need to require. just add process.env.variable)
+
+questions:
+* apakah setiap table perlu authorization yang berbeda2? karena proses ini kan langsung nyari 1 table
+* apakah deleteTodo perlu di bikin lebih strict to make sure Todo yang di delete beneran kepunyaan user?
+    {where:{id:req.params.id}} => {where:{id:req.params.id, UserId: req.currentUser.id}}

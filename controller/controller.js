@@ -5,15 +5,10 @@ const {generateToken} = require(`../helpers/jwt.js`)
 
 class Controller {
     static getTodos(req, res){
-        // console.log(res.local.user);
-        // const {id} = res.local.user
-        console.log(req.currentUser.id);
+        // console.log(req.currentUser.id);
         Todo.findAll({
-            where:{
-                UserId: req.currentUser.id
-            },
-            order:
-            [[`id`,`ASC`]]
+            where:{ UserId: req.currentUser.id },
+            order: [[`id`,`ASC`]]
         })
             .then(data =>{
                 if (data.length === 0){
@@ -21,7 +16,7 @@ class Controller {
                         code: 404,
                         message: "Todos not found"
                     }
-                } else{
+                } else {
                     res.status(200).json(data)
                 }
             })
