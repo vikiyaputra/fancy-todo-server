@@ -30,6 +30,7 @@ function errorHandler (err, req, res, next){
             break;
 
         case "SequelizeValidationError":
+            console.log(err);
             let errors = []
             for (let i = 0; i < err.errors.length; i++){
                 errors.push(err.errors[i].message)

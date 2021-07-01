@@ -3,8 +3,10 @@ const express = require(`express`)
 const app = express()
 const router = require(`./routes/routes.js`)
 const port = 3000
+const cors = require(`cors`)
 const { errorHandler } = require('./middlewares/errorHandler.js')
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(`/`, router)

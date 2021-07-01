@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
+        isEmail: true,
         notNull: {
           name: 'Email tidak boleh kosong'
         }
@@ -38,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
+        len: [6],
         notNull: {
           name: 'Password tidak boleh kosong'
         }

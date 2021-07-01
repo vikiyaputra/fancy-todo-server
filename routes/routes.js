@@ -1,10 +1,12 @@
 const router = require (`express`).Router()
 const userRoutes = require(`./userRoutes`)
 const todoRoutes = require(`./todoRoutes`)
+const apiRoutes = require(`./apiRoutes`)
 
 
 router.use(`/`, userRoutes)
 router.use(`/todos`, todoRoutes)
+router.use(`/api`, apiRoutes)
 
 
 // router.post(`/register`, Controller.register)

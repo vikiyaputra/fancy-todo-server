@@ -19,8 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notNull: {
-          name: 'Title tidak boleh kosong'
+        notEmpty: {
+          msg: 'Title tidak boleh kosong'
         }
       }
     },
@@ -28,8 +28,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notNull: {
-          name: 'Description tidak boleh kosong'
+        notEmpty: {
+          msg: 'Description tidak boleh kosong'
         }
       }
     },
@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
-        notNull: {
+        notEmpty: {
           name: 'UserId tidak boleh kosong'
         }
       }

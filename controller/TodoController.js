@@ -1,4 +1,6 @@
 const {Todo, User} = require(`../models/index.js`)
+const axios = require(`axios`)
+
 
 class TodoController {
     static getTodos(req, res, next){
@@ -8,6 +10,7 @@ class TodoController {
             order: [[`id`,`ASC`]]
         })
             .then(data =>{
+                console.log(data[0].title);
                 if (data.length === 0){
                     throw {
                         code: 404,
@@ -26,6 +29,7 @@ class TodoController {
 
     static postTodo(req, res, next){
         let {title,description,status,due_date} = req.body
+        console.log(req.body);
         let UserId = req.currentUser.id
         Todo.create({
             title,
@@ -47,7 +51,7 @@ class TodoController {
         })
     }
 
-    static findTodo(req, res){
+    static findTodo(req, res, next){
         Todo.findOne({where:{id:req.params.id}})
         .then(data=>{
             res.status(200).json(data)
@@ -58,7 +62,7 @@ class TodoController {
         });
     }
 
-    static putTodo(req, res){
+    static putTodo(req, res, next){
         let {title,description,status,due_date} = req.body
         Todo.update({title,description,status,due_date},{
             where: {id:req.params.id}, 
@@ -81,7 +85,7 @@ class TodoController {
             });
     }
 
-    static patchTodo (req, res){
+    static patchTodo (req, res, next){
         let {status} = req.body
         Todo.update({status}, {where:{id:req.params.id}, returning:true})
         .then(data=>{
@@ -118,7 +122,7 @@ class TodoController {
     //     });
     // }
 
-    static deleteTodo(req, res){
+    static deleteTodo(req, res, next){
         let deletedData
         Todo.findOne({where:{id:req.params.id}})
         .then(data=>{
