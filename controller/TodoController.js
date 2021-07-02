@@ -10,7 +10,6 @@ class TodoController {
             order: [[`id`,`ASC`]]
         })
             .then(data =>{
-                console.log(data[0].title);
                 if (data.length === 0){
                     throw {
                         code: 404,
