@@ -11,7 +11,7 @@ class UserController{
         User.create({name, email, password, type}, {returning:true})
             .then(data =>{
                 // console.log(data);
-                res.status(200).json(data.email)
+                res.status(200).json({email:data.email})
             })
             .catch(err =>{
                 next(err)
@@ -67,7 +67,6 @@ class UserController{
             })
             .then(user=>{
                 let token = generateToken({id: user.id, name: user.name, email: user.email, type:user.type})
-                console.log(token);
                 res.status(200).json({token:token, name:user.name})
             })
             .catch(err=>{

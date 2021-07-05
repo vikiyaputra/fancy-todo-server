@@ -3,7 +3,7 @@ const axios = require(`axios`)
 class ApiController{
 
     static weather(req, res, next){
-        axios.get(`http://api.openweathermap.org/data/2.5/forecast?id=1642911&appid=c3a18b31ec8ca0ecb32c8c9bd775713e&units=metric`)
+        axios.get(process.env.OPENWEATHER_API_KEY)
             .then(data=>{
                 let balikan = {
                     city: data.data.city.name,

@@ -30,13 +30,17 @@ function errorHandler (err, req, res, next){
             break;
 
         case "SequelizeValidationError":
-            console.log(err);
             let errors = []
             for (let i = 0; i < err.errors.length; i++){
                 errors.push(err.errors[i].message)
             }
             code = 400
             message = errors
+            break;
+        
+        case "SequelizeUniqueConstraintError":
+            message = err.errors[0].message
+            code =  500
             break;
 
     
