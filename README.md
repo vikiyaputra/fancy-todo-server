@@ -4,8 +4,183 @@
 
 http://localhost:3000
 
+# users
+
+----
+***Regsiter***
+---
+  Register new user.
+
+  * **URL**
+
+     /register
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+
+    None
+
+* **Data Params**
+
+   **Required:**
+  ````
+    {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      type: req.body.type
+    }
+  ````
+
+* **Success Response:**
+
+  * **Code:** 201 <br />
+    **Content:** 
+    ```
+    {email: "macdup@gmail.com"}
+    ```
+
+
+* **Error Response:**
+
+  * **Code:** 500 <br />
+    **Content:** 
+    ```
+    {
+      message : "SequelizeValidationError",
+      errDev: {}
+    }
+    ```
+
+  OR
+
+  * **Code:** 500 <br />
+
+
+----
+***Login***
+---
+Login to user
+
+* **URL**
+
+  /login
+
+* **Method:**
+
+  `POST`
+
+*  **URL Params**
+
+    None
+
+* **Data Params**
+
+   **Required:**
+  ````
+    {
+      email: req.body.email,
+      password: req.body.password
+    }
+  ````
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** 
+    ```
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwibmFtZSI6Ik51bnVuZyIsImVtYWlsIjoibnVudW5nLndhbmdzYXB1dHJpQGdtYWlsLmNvbSIsInR5cGUiOiJub3JtYWwiLCJpYXQiOjE2MjU0NTU2NTR9.OCXAxUJ5A8nKMu9ctoN1AnsrvWgJMo0jXkz9xOisyXM",
+      "name": "Nunung"
+    }
+    ```
+
+
+* **Error Response:**
+  * **Code:** 401 <br />
+      **Content:** 
+      ```
+      {
+        message : "Email / Password Salah",
+        errDev: {}
+      }
+      ```
+
+    OR
+
+    * **Code:** 500 <br />
+
+
+----
+***OAuth Login***
+---
+Login to user with Google
+
+* **URL**
+
+  /googleLogin
+
+* **Method:**
+
+  `POST`
+
+* **URL Params**
+
+    None
+
+* **Data Params**
+
+    None
+ 
+* **Sample Call**
+
+    ```javascript
+     $.ajax({
+        url: "http://localhost:3000/googleLogin",
+        method: "post",
+        data: {
+            token:id_token
+        }
+    })
+  ```
+ 
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** 
+    ```
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwibmFtZSI6Ik51bnVuZyIsImVtYWlsIjoibnVudW5nLndhbmdzYXB1dHJpQGdtYWlsLmNvbSIsInR5cGUiOiJub3JtYWwiLCJpYXQiOjE2MjU0NTU2NTR9.OCXAxUJ5A8nKMu9ctoN1AnsrvWgJMo0jXkz9xOisyXM",
+      "name": "Nunung"
+    }
+    ```
+
+
+* **Error Response:**
+  * **Code:** 401 <br />
+      **Content:** 
+      ```
+      {
+        message : "Email / Password Salah",
+        errDev: {}
+      }
+      ```
+
+    OR
+
+    * **Code:** 500 <br />
+
+
+----
+
+
+
 # todos
 
+----
 ***Add Todo***
 ----
   Returns new todo.
@@ -22,15 +197,22 @@ http://localhost:3000
 
     None
 
+* **Headers**
+
+    **Required:**
+  ````
+  {token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6IkFyaWEiLCJlbWFpbCI6ImFyaWEud2FuZ3NhcHV0cmlAZ21haWwuY29tIiwidHlwZSI6Im5vcm1hbCIsImlhdCI6MTYyNDYwMjMyMH0.EhvcjomzDRwBiHIwNPTQlRPdYUkPmo7fwBiK76ERDno}
+  ````
+
 * **Data Params**
 
    **Required:**
   ````
     {
-      title: req.body.title,
-      description: req.body.description,
-      status: req.body.status,
-      due_date: req.body.due_date
+      "title": req.body.title,
+      "description": req.body.description,
+      "status": req.body.status,
+      "due_date": req.body.due_date
     }
   ````
 
@@ -84,6 +266,13 @@ http://localhost:3000
 * **Data Params**
 
   None
+
+* **Headers**
+
+    **Required:**
+  ````
+  {token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6IkFyaWEiLCJlbWFpbCI6ImFyaWEud2FuZ3NhcHV0cmlAZ21haWwuY29tIiwidHlwZSI6Im5vcm1hbCIsImlhdCI6MTYyNDYwMjMyMH0.EhvcjomzDRwBiHIwNPTQlRPdYUkPmo7fwBiK76ERDno}
+  ````
 
 * **Success Response:**
 
@@ -150,6 +339,14 @@ http://localhost:3000
 
     None
 
+* **Headers**
+
+    **Required:**
+  ````
+  {token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6IkFyaWEiLCJlbWFpbCI6ImFyaWEud2FuZ3NhcHV0cmlAZ21haWwuY29tIiwidHlwZSI6Im5vcm1hbCIsImlhdCI6MTYyNDYwMjMyMH0.EhvcjomzDRwBiHIwNPTQlRPdYUkPmo7fwBiK76ERDno}
+  ````
+  
+
 * **Success Response:**
 
   * **Code:** 200 <br />
@@ -190,6 +387,14 @@ http://localhost:3000
  
     `id=[integer]`
     
+
+* **Headers**
+
+    **Required:**
+  ````
+  {token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6IkFyaWEiLCJlbWFpbCI6ImFyaWEud2FuZ3NhcHV0cmlAZ21haWwuY29tIiwidHlwZSI6Im5vcm1hbCIsImlhdCI6MTYyNDYwMjMyMH0.EhvcjomzDRwBiHIwNPTQlRPdYUkPmo7fwBiK76ERDno}
+  ````
+  
 
 * **Data Params**<br/>
 
@@ -265,6 +470,14 @@ http://localhost:3000
     }
     ```
 
+* **Headers**
+
+    **Required:**
+  ````
+  {token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6IkFyaWEiLCJlbWFpbCI6ImFyaWEud2FuZ3NhcHV0cmlAZ21haWwuY29tIiwidHlwZSI6Im5vcm1hbCIsImlhdCI6MTYyNDYwMjMyMH0.EhvcjomzDRwBiHIwNPTQlRPdYUkPmo7fwBiK76ERDno}
+  ````
+  
+
 * **Success Response:**
 
   * **Code:** 200 <br />
@@ -323,6 +536,14 @@ http://localhost:3000
 
    None
 
+* **Headers**
+
+    **Required:**
+  ````
+  {token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6IkFyaWEiLCJlbWFpbCI6ImFyaWEud2FuZ3NhcHV0cmlAZ21haWwuY29tIiwidHlwZSI6Im5vcm1hbCIsImlhdCI6MTYyNDYwMjMyMH0.EhvcjomzDRwBiHIwNPTQlRPdYUkPmo7fwBiK76ERDno}
+  ````
+  
+
 * **Success Response:**
 
   * **Code:** 200 <br />
@@ -354,3 +575,43 @@ http://localhost:3000
     
     * **Code:** 500 <br />
 
+
+# weathers
+
+----
+***Weather***
+---
+  Get weather data.
+
+  * **URL**
+
+     /api/weather
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+
+    None
+
+* **Data Params**
+
+    None
+
+* **Success Response:**
+
+  * **Code:** 200<br />
+    **Content:** 
+    ```
+    { city: 'Jakarta', temp: 30.81, weather: 'Clouds' }
+    ```
+
+
+* **Error Response:**
+
+
+  * **Code:** 500 <br />
+
+
+----

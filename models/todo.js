@@ -15,13 +15,37 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Todo.init({
-    title: DataTypes.STRING,
-    description: DataTypes.STRING,
-    status: DataTypes.STRING,
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'Title tidak boleh kosong'
+        }
+      }
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'Description tidak boleh kosong'
+        }
+      }
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          name: 'Status tidak boleh kosong'
+        }
+      }
+    },
     due_date: {type:DataTypes.DATE, validate:{
       dateRestriction(value){
         if(value < new Date()){
-          throw `Waktu gak sesuai`
+          throw `Tanggal harus lebih besar dari hari ini`
         }
       }
     }},
@@ -29,8 +53,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
-        notNull: {
-          msg: 'UserId can not be null'
+        notEmpty: {
+          name: 'UserId tidak boleh kosong'
         }
       }
     }
